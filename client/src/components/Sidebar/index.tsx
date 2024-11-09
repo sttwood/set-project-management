@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 
 import { useAppDispatch, useAppSelector } from '@/app/redux';
 import { setIsSidebarCollapsed } from '@/state';
+import { useGetProjectsQuery } from '@/state/api';
 
 import {
   Briefcase,
@@ -25,9 +26,11 @@ import {
   AlertTriangle,
   AlertOctagon,
   Layers3,
+  File
 } from 'lucide-react';
 
 const Sidebar = () => {
+  const { data: projects } = useGetProjectsQuery();
   const dispatch = useAppDispatch();
 
   const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed);
@@ -95,6 +98,15 @@ const Sidebar = () => {
             : <ChevronDown className='h-5 w-5' />
           }
         </button>
+        {/* PROJECTS LIST */}
+        {showProjects && projects?.map((project) => (
+          <SidebarLink
+            key={`SidebarLink-Project-key-${project.id}`}
+            icon={File}
+            label={project.name}
+            href={`/projects/${project.id}`}
+          />
+        ))}
 
         {/* PRIORITY */}
         <button
@@ -108,6 +120,7 @@ const Sidebar = () => {
             : <ChevronDown className='h-5 w-5' />
           }
         </button>
+        {/* PRIORITY LIST */}
         {showPriority && (
           <>
             <SidebarLink icon={AlertCircle} label='Urgent' href='/priority/urgent' />
